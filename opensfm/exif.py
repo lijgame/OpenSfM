@@ -99,16 +99,17 @@ def extract_exif_from_file(fileobj):
 def get_xmp(fileobj):
     '''Extracts XMP metadata from and image fileobj
     '''
-    img_str = str(fileobj.read())
-    xmp_start = img_str.find('<x:xmpmeta')
-    xmp_end = img_str.find('</x:xmpmeta')
+    img_str = fileobj.read()
+
+    xmp_start = img_str.find(b'<x:xmpmeta')
+    xmp_end = img_str.find(b'</x:xmpmeta')
 
     if xmp_start < xmp_end:
         xmp_str = img_str[xmp_start:xmp_end + 12]
         xdict = x2d.parse(xmp_str)
-        xdict = xdict.get('x:xmpmeta', {})
-        xdict = xdict.get('rdf:RDF', {})
-        xdict = xdict.get('rdf:Description', {})
+        xdict = xdict.get(b'x:xmpmeta', {})
+        xdict = xdict.get(b'rdf:RDF', {})
+        xdict = xdict.get(b'rdf:Description', {})
         if isinstance(xdict, list):
             return xdict
         else:
